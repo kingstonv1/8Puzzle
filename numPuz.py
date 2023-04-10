@@ -51,6 +51,9 @@ class Game:
 		# Generate a 3 x 3 array of tiles
 		self.tiles = generate_tiles()
 		
+		for i in self.tiles:
+			print(i)
+		
 		# While loop that makes sure the puzzle is never generated pre-solved.
 		while self.count_inversions() % 2 == 1:
 			self.tiles = generate_tiles()
@@ -69,6 +72,10 @@ class Game:
 				surface.blit(tile.surface, (tile.position[0] * 200, tile.position[1] * 200))
 				
 	def handle_mouse_click(self, click):
+		if 0 > click[0] > 600 or 0 > click[1] > 600:
+			print("Please don't click outside of the board!")
+			return
+		
 		for x in range(3):
 			for y in range(3):
 				tile = self.tiles[x][y]
@@ -85,7 +92,7 @@ class Game:
 	# noinspection PyUnresolvedReferences
 	def move_tile(self, tileX, tileY):
 		clickedTile = self.tiles[tileX][tileY]
-		
+
 		if tileY > 0:
 			if self.tiles[tileX][tileY - 1].value == ' ':
 				clickedTile.move('UP')
@@ -99,21 +106,22 @@ class Game:
 				self.move_blank_tile('UP')
 				self.tiles[tileX][tileY], self.tiles[tileX][tileY + 1] = \
 					self.tiles[tileX][tileY + 1], self.tiles[tileX][tileY]
-				
+
 		if tileX > 0:
 			if self.tiles[tileX - 1][tileY].value == ' ':
 				clickedTile.move('LEFT')
 				self.move_blank_tile('RIGHT')
 				self.tiles[tileX - 1][tileY], self.tiles[tileX][tileY] = \
 					self.tiles[tileX][tileY], self.tiles[tileX - 1][tileY]
-				
+
 		if tileX < 2:
 			if self.tiles[tileX + 1][tileY].value == ' ':
 				clickedTile.move('RIGHT')
 				self.move_blank_tile('LEFT')
 				self.tiles[tileX + 1][tileY], self.tiles[tileX][tileY] = \
 					self.tiles[tileX][tileY], self.tiles[tileX + 1][tileY]
-				
+	
+		
 	def count_inversions(self):
 		inversions = 0
 		
@@ -129,7 +137,6 @@ class Game:
 				inversions += 1 if selectedVal > comparedVal else 0
 		
 		return inversions + 1
-	
 
 def generate_tiles():
 	possibleTiles = [1, 2, 3, 4, 5, 6, 7, 8, ' ']
